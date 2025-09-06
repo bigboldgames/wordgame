@@ -14,55 +14,117 @@ const Leaderboard = () => {
     return `https://i.pravatar.cc/100?img=${randomNum}`;
   };
 
+  // 🔹 Format time from seconds to readable format
+  const formatTime = (seconds) => {
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const secs = seconds % 60;
+    
+    if (hours > 0) {
+      return `${hours}h ${minutes}m`;
+    } else if (minutes > 0) {
+      return `${minutes}m ${secs}s`;
+    } else {
+      return `${secs}s`;
+    }
+  };
+
+  // 🔹 Format average move time
+  const formatAvgMoveTime = (avgMoveTime) => {
+    return `${avgMoveTime}s`;
+  };
+
+  // 🔹 Calculate average time per game
+  const getAvgTimePerGame = (totalTime, totalGames) => {
+    if (totalGames === 0) return "0s";
+    const avgSeconds = Math.round(totalTime / totalGames);
+    return formatTime(avgSeconds);
+  };
+
   // 🔹 API se leaderboard data fetch karna yaha hoga
   useEffect(() => {
+    /*
     // Example API call (replace with your API)
-    // fetch("/api/leaderboard")
-    //   .then(res => res.json())
-    //   .then(data => setPlayers(data));
+    fetch("/api/leaderboard")
+      .then(res => res.json())
+      .then(data => setPlayers(data))
+      .catch(err => console.error('Error fetching leaderboard:', err));
+    */
 
-    // 🔹 Abhi ke liye dummy data
+    // 🔹 Demo data with real API structure
     const data = [
       {
-        id: 1,
-        name: "John Doe",
-        stars: 120,
-        totalGames: 45,
-        avgTime: "1m 32s",
-        avatar: "",
+        id: "u1",
+        name: "Alice",
+        total_games: 10,
+        total_stars: 150,
+        total_time: 3600,
+        avg_move_time: 12,
+        rank: 1
       },
       {
-        id: 2,
-        name: "Emma Stone",
-        stars: 110,
-        totalGames: 39,
-        avgTime: "1m 50s",
-        avatar: "",
+        id: "u2", 
+        name: "Bob",
+        total_games: 9,
+        total_stars: 140,
+        total_time: 4000,
+        avg_move_time: 14,
+        rank: 2
       },
       {
-        id: 3,
-        name: "Michael Smith",
-        stars: 100,
-        totalGames: 50,
-        avgTime: "2m 05s",
-        avatar: "",
+        id: "u3",
+        name: "Charlie",
+        total_games: 12,
+        total_stars: 135,
+        total_time: 3800,
+        avg_move_time: 11,
+        rank: 3
       },
       {
-        id: 4,
-        name: "Sophia Lee",
-        stars: 95,
-        totalGames: 36,
-        avgTime: "2m 20s",
-        avatar: "",
+        id: "u4",
+        name: "Diana",
+        total_games: 8,
+        total_stars: 120,
+        total_time: 4200,
+        avg_move_time: 15,
+        rank: 4
       },
       {
-        id: 5,
-        name: "David Kim",
-        stars: 90,
-        totalGames: 41,
-        avgTime: "2m 10s",
-        avatar: "",
+        id: "u5",
+        name: "Eve",
+        total_games: 11,
+        total_stars: 115,
+        total_time: 4500,
+        avg_move_time: 13,
+        rank: 5
       },
+      {
+        id: "u6",
+        name: "Frank",
+        total_games: 7,
+        total_stars: 100,
+        total_time: 5000,
+        avg_move_time: 18,
+        rank: 6
+      },
+      {
+        id: "u7",
+        name: "Grace",
+        total_games: 9,
+        total_stars: 95,
+        total_time: 4800,
+        avg_move_time: 16,
+        rank: 7
+      },
+      {
+        id: "u8",
+        name: "Henry",
+        total_games: 6,
+        total_stars: 85,
+        total_time: 5200,
+        avg_move_time: 20,
+        rank: 8
+      }
     ];
     setPlayers(data);
   }, []);
@@ -109,15 +171,20 @@ const Leaderboard = () => {
               const ring = idx === 0 ? 'ring-yellow-300' : idx === 1 ? 'ring-slate-300' : 'ring-amber-800';
               const bg = idx === 0 ? 'from-yellow-50 to-amber-50' : idx === 1 ? 'from-slate-50 to-slate-100' : 'from-amber-50 to-orange-50';
               return (
-                <a key={p.id} href={`/profile/${p.id}`} className={`group relative overflow-hidden rounded-2xl border border-slate-200 bg-gradient-to-br ${bg} p-5 shadow-sm hover:shadow-md transition`}> 
-                  <div className="absolute -top-8 -right-8 text-6xl opacity-20 group-hover:opacity-30 transition">{medal}</div>
-                  <div className="flex items-center gap-4">
-                    <img src={getAvatar(p.avatar)} alt={p.name} className={`w-16 h-16 rounded-full ring-4 ${ring} shadow`} />
-                    <div className="min-w-0">
-                      <h3 className="text-lg font-semibold text-slate-800 truncate">{medal} {p.name}</h3>
-                      <p className="text-xs text-slate-500">{p.totalGames} Games • Avg {p.avgTime}</p>
-                      <div className="mt-2 inline-flex items-center gap-1 text-amber-500 font-semibold">
-                        <span>★</span><span className="text-slate-800">{p.stars}</span>
+                <a key={p.id} href={`/profile/${p.id}`} className={`group relative overflow-hidden rounded-2xl border border-slate-200 bg-gradient-to-br ${bg} p-4 sm:p-5 shadow-sm hover:shadow-md transition`}> 
+                  <div className="absolute -top-6 -right-6 text-4xl sm:text-6xl opacity-20 group-hover:opacity-30 transition">{medal}</div>
+                  <div className="flex items-center gap-3 sm:gap-4">
+                    <img src={getAvatar(p.avatar)} alt={p.name} className={`w-12 h-12 sm:w-16 sm:h-16 rounded-full ring-4 ${ring} shadow`} />
+                    <div className="min-w-0 flex-1">
+                      <h3 className="text-base sm:text-lg font-semibold text-slate-800 truncate">{medal} {p.name}</h3>
+                      <p className="text-xs text-slate-500">{p.total_games} Games • Avg {getAvgTimePerGame(p.total_time, p.total_games)}</p>
+                      <div className="mt-1 sm:mt-2 flex items-center gap-2">
+                        <div className="inline-flex items-center gap-1 text-amber-500 font-semibold">
+                          <span>★</span><span className="text-slate-800">{p.total_stars}</span>
+                        </div>
+                        <div className="text-xs text-slate-500">
+                          {formatAvgMoveTime(p.avg_move_time)}/move
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -128,57 +195,116 @@ const Leaderboard = () => {
 
           {/* Leaderboard List */}
           <div className="bg-white rounded-2xl shadow border border-slate-200 overflow-hidden">
-            <div className="px-6 py-4 border-b bg-slate-50 flex items-center justify-between">
+            <div className="px-4 sm:px-6 py-4 border-b bg-slate-50 flex items-center justify-between">
               <div className="text-sm font-semibold text-slate-700">All Players</div>
               <div className="text-xs text-slate-500">Updated just now</div>
             </div>
 
-            {rest.map((player, index) => {
-              const rank = index + 4; // after top 3
-              const isTop = rank <= 10;
-              return (
-                <a
-                  key={player.id}
-                  href={`/profile/${player.id}`}
-                  className="flex items-center justify-between px-6 py-4 hover:bg-slate-50 transition duration-200 border-b last:border-b-0"
-                >
-                  {/* Rank */}
-                  <div className={`w-10 h-10 flex items-center justify-center rounded-full text-sm font-bold ${isTop ? 'bg-indigo-100 text-indigo-700' : 'bg-slate-200 text-slate-700'}`}>
-                    {rank}
-                  </div>
+            {/* Mobile Card Layout */}
+            <div className="block sm:hidden">
+              {rest.map((player, index) => {
+                const rank = player.rank;
+                const isTop = rank <= 10;
+                return (
+                  <a
+                    key={player.id}
+                    href={`/profile/${player.id}`}
+                    className="block p-4 hover:bg-slate-50 transition duration-200 border-b last:border-b-0"
+                  >
+                    <div className="flex items-center gap-3">
+                      {/* Rank */}
+                      <div className={`w-8 h-8 flex items-center justify-center rounded-full text-sm font-bold ${isTop ? 'bg-indigo-100 text-indigo-700' : 'bg-slate-200 text-slate-700'}`}>
+                        {rank}
+                      </div>
 
-                  {/* Profile */}
-                  <div className="flex items-center gap-4 flex-1 ml-4 min-w-0">
-                    <img
-                      src={getAvatar(player.avatar)}
-                      alt={player.name}
-                      className="w-10 h-10 rounded-full border border-slate-200"
-                    />
-                    <div className="min-w-0">
-                      <h2 className="text-sm font-medium text-slate-800 truncate">
-                        {player.name}
-                      </h2>
-                      <p className="text-xs text-slate-500 truncate">
-                        {player.totalGames} Games • Avg {player.avgTime}
-                      </p>
+                      {/* Profile */}
+                      <div className="flex items-center gap-3 flex-1 min-w-0">
+                        <img
+                          src={getAvatar(player.avatar)}
+                          alt={player.name}
+                          className="w-10 h-10 rounded-full border border-slate-200"
+                        />
+                        <div className="min-w-0 flex-1">
+                          <h2 className="text-sm font-medium text-slate-800 truncate">
+                            {player.name}
+                          </h2>
+                          <p className="text-xs text-slate-500">
+                            {player.total_games} Games • {getAvgTimePerGame(player.total_time, player.total_games)} avg
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* Stats */}
+                      <div className="text-right">
+                        <div className="inline-flex items-center gap-1 text-amber-500 font-semibold text-sm">
+                          <span>★</span>
+                          <span className="text-slate-800">{player.total_stars}</span>
+                        </div>
+                        <div className="text-xs text-slate-500 mt-1">
+                          {formatAvgMoveTime(player.avg_move_time)}/move
+                        </div>
+                      </div>
                     </div>
-                  </div>
+                  </a>
+                );
+              })}
+            </div>
 
-                  {/* Stars + Badges */}
-                  <div className="flex items-center gap-3">
-                    <span className="inline-flex items-center gap-1 text-amber-500 font-semibold">
-                      <span>★</span>
-                      <span className="text-slate-800">{player.stars}</span>
-                    </span>
-                    {player.avgTime && (
-                      <span className="hidden sm:inline-block text-xs px-2 py-1 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-100">
-                        {player.avgTime}
-                      </span>
-                    )}
-                  </div>
-                </a>
-              );
-            })}
+            {/* Desktop Table Layout */}
+            <div className="hidden sm:block">
+              {rest.map((player, index) => {
+                const rank = player.rank;
+                const isTop = rank <= 10;
+                return (
+                  <a
+                    key={player.id}
+                    href={`/profile/${player.id}`}
+                    className="flex items-center justify-between px-6 py-4 hover:bg-slate-50 transition duration-200 border-b last:border-b-0"
+                  >
+                    {/* Rank */}
+                    <div className={`w-10 h-10 flex items-center justify-center rounded-full text-sm font-bold ${isTop ? 'bg-indigo-100 text-indigo-700' : 'bg-slate-200 text-slate-700'}`}>
+                      {rank}
+                    </div>
+
+                    {/* Profile */}
+                    <div className="flex items-center gap-4 flex-1 ml-4 min-w-0">
+                      <img
+                        src={getAvatar(player.avatar)}
+                        alt={player.name}
+                        className="w-10 h-10 rounded-full border border-slate-200"
+                      />
+                      <div className="min-w-0">
+                        <h2 className="text-sm font-medium text-slate-800 truncate">
+                          {player.name}
+                        </h2>
+                        <p className="text-xs text-slate-500 truncate">
+                          {player.total_games} Games • {getAvgTimePerGame(player.total_time, player.total_games)} avg
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Stats */}
+                    <div className="flex items-center gap-4">
+                      <div className="text-center">
+                        <div className="inline-flex items-center gap-1 text-amber-500 font-semibold">
+                          <span>★</span>
+                          <span className="text-slate-800">{player.total_stars}</span>
+                        </div>
+                        <div className="text-xs text-slate-500">
+                          {formatTime(player.total_time)} total
+                        </div>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-sm font-semibold text-slate-700">
+                          {formatAvgMoveTime(player.avg_move_time)}
+                        </div>
+                        <div className="text-xs text-slate-500">per move</div>
+                      </div>
+                    </div>
+                  </a>
+                );
+              })}
+            </div>
           </div>
         </div>
       </div>

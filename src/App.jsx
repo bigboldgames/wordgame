@@ -20,7 +20,7 @@ function App() {
               <Route path='/' element={<Index />}>
                 <Route index element={<Dailychallange />} />
                 <Route path='/archive' element={<Archive />} />
-                <Route path='/archive/:id' element={<GameBoard />} />
+                <Route path='/archive/:id' element={<GameBoard challenge={'archive'} />} />
                 <Route path='/leaderboard' element={<Leaderboard />} />
                 <Route path='/profile' element={<Profile />} />
                 <Route path='/how-to-play' element={<HowToplay />} />
